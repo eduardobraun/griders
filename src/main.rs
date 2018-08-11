@@ -1,4 +1,5 @@
 #![warn(clippy)]
+#![warn(clippy_pedantic)]
 
 // extern crate rand;
 extern crate svg;
@@ -14,7 +15,7 @@ use grid::*;
 
 fn main() {
     use CellSize::*;
-    let grid_layout = GridLayout::new()
+    let grid_layout = Layout::new()
         .with_columns(&[Percent(20.), Auto, Auto, Percent(20.)])
         .with_rows(&[Percent(15.), Auto])
         .with_viewport(800, 600)

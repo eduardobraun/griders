@@ -8,7 +8,7 @@ pub enum CellSize {
 }
 
 #[derive(Clone, Default)]
-pub struct GridLayout {
+pub struct Layout {
     pub columns: Vec<CellSize>,
     pub rows: Vec<CellSize>,
     pub viewport: (u32, u32),
@@ -77,9 +77,9 @@ fn resolve_intrinsic_track_sizes(tracks: &mut Vec<TrackSize>, max_size: f32) {
     }
 }
 
-impl GridLayout {
-    pub fn new() -> GridLayoutBuilder {
-        GridLayoutBuilder {
+impl Layout {
+    pub fn new() -> LayoutBuilder {
+        LayoutBuilder {
             columns: None,
             rows: None,
             viewport: None,
@@ -123,13 +123,13 @@ impl GridLayout {
 }
 
 #[derive(Clone, Default)]
-pub struct GridLayoutBuilder {
+pub struct LayoutBuilder {
     columns: Option<Vec<CellSize>>,
     rows: Option<Vec<CellSize>>,
     viewport: Option<(u32, u32)>,
 }
 
-impl GridLayoutBuilder {
+impl LayoutBuilder {
     // pub fn new() -> Self {
     //     GridLayoutBuilder {
     //         columns: None,
@@ -138,27 +138,27 @@ impl GridLayoutBuilder {
     //     }
     // }
 
-    pub fn with_columns(mut self, cols: &[CellSize]) -> GridLayoutBuilder {
+    pub fn with_columns(mut self, cols: &[CellSize]) -> Self {
         self.columns = Some(cols.to_vec());
         self
     }
 
-    pub fn with_rows(mut self, rows: &[CellSize]) -> GridLayoutBuilder {
+    pub fn with_rows(mut self, rows: &[CellSize]) -> Self {
         self.rows = Some(rows.to_vec());
         self
     }
 
-    pub fn with_viewport(mut self, width: u32, height: u32) -> GridLayoutBuilder {
+    pub fn with_viewport(mut self, width: u32, height: u32) -> Self {
         self.viewport = Some((width, height));
         self
     }
 
-    pub fn build(&self) -> Result<GridLayout, &'static str> {
+    pub fn build(&self) -> Result<Layout, &'static str> {
         if self.viewport == None {
             return Err("ViewPort size not defined.");
         }
         let viewport = self.viewport.unwrap();
-        Ok(GridLayout {
+        Ok(Layout {
             columns: match self.columns.clone() {
                 Some(cols) => cols,
                 None => vec![CellSize::Auto],
