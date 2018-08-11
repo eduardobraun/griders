@@ -1,3 +1,5 @@
+#![warn(clippy)]
+
 // extern crate rand;
 extern crate svg;
 

@@ -105,8 +105,8 @@ impl GridLayout {
         let mut res: Vec<(f32, f32, f32, f32)> = vec![];
         let mut row_pos = 0.;
         let mut col_pos = 0.;
-        for r in row_tracks.iter() {
-            for c in column_tracks.iter() {
+        for r in &row_tracks {
+            for c in &column_tracks {
                 res.push((
                     col_pos,
                     row_pos,
