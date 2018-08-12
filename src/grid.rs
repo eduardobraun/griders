@@ -1,7 +1,7 @@
 #[derive(Clone)]
 pub enum CellSize {
     Auto,
-    Percent(f32),
+    Percent(f64),
     // Px(u32),
     // Pt(u32),
     // Em(u32),
@@ -16,8 +16,8 @@ pub struct Layout {
 
 #[derive(Clone, Default)]
 struct TrackSize {
-    base_size: Option<f32>,
-    max_growth: Option<f32>,
+    base_size: Option<f64>,
+    max_growth: Option<f64>,
 }
 
 // fn get_free_size(layout: &[CellSize], max_size: f32) -> f32 {
@@ -31,7 +31,7 @@ struct TrackSize {
 //     max_size - w
 // }
 
-fn initialize_track_sizes(track_layout: &[CellSize], max_size: f32) -> Vec<TrackSize> {
+fn initialize_track_sizes(track_layout: &[CellSize], max_size: f64) -> Vec<TrackSize> {
     // 11.4. Initialize Track Sizes
     let tracks: Vec<TrackSize> = track_layout
         .iter()
@@ -39,7 +39,7 @@ fn initialize_track_sizes(track_layout: &[CellSize], max_size: f32) -> Vec<Track
             let (base, growth) = match c {
                 CellSize::Auto => (None, None),
                 CellSize::Percent(p) => {
-                    let s = (p / 100.) * max_size as f32;
+                    let s = (p / 100.) * max_size as f64;
                     (Some(s), Some(s))
                 }
             };
@@ -53,7 +53,7 @@ fn initialize_track_sizes(track_layout: &[CellSize], max_size: f32) -> Vec<Track
     tracks
 }
 
-fn resolve_intrinsic_track_sizes(tracks: &mut Vec<TrackSize>, max_size: f32) {
+fn resolve_intrinsic_track_sizes(tracks: &mut Vec<TrackSize>, max_size: f64) {
     let free_space = tracks
         .iter()
         .fold(max_size, |free, track| match track.base_size {
@@ -64,7 +64,7 @@ fn resolve_intrinsic_track_sizes(tracks: &mut Vec<TrackSize>, max_size: f32) {
         None => autos + 1,
         _ => autos,
     });
-    let auto_size = free_space / autos as f32;
+    let auto_size = free_space / f64::from(autos);
 
     // 11.5. Resolve Intrinsic Track Sizes
     for mut c in tracks.iter_mut() {
@@ -86,23 +86,23 @@ impl Layout {
         }
     }
 
-    pub fn get_grid(&self) -> Vec<(f32, f32, f32, f32)> {
+    pub fn get_grid(&self) -> Vec<(f64, f64, f64, f64)> {
         // COLUMNS
         // 11.4. Initialize Track Sizes
-        let mut column_tracks = initialize_track_sizes(&self.columns, self.viewport.0 as f32);
+        let mut column_tracks = initialize_track_sizes(&self.columns, f64::from(self.viewport.0));
 
         // 11.5. Resolve Intrinsic Track Sizes
-        resolve_intrinsic_track_sizes(&mut column_tracks, self.viewport.0 as f32);
+        resolve_intrinsic_track_sizes(&mut column_tracks, f64::from(self.viewport.0));
 
         // ROWS
         // 11.4. Initialize Track Sizes
-        let mut row_tracks = initialize_track_sizes(&self.rows, self.viewport.1 as f32);
+        let mut row_tracks = initialize_track_sizes(&self.rows, f64::from(self.viewport.1));
 
         // 11.5. Resolve Intrinsic Track Sizes
-        resolve_intrinsic_track_sizes(&mut row_tracks, self.viewport.1 as f32);
+        resolve_intrinsic_track_sizes(&mut row_tracks, f64::from(self.viewport.1));
 
         //
-        let mut res: Vec<(f32, f32, f32, f32)> = vec![];
+        let mut res: Vec<(f64, f64, f64, f64)> = vec![];
         let mut row_pos = 0.;
         let mut col_pos = 0.;
         for r in &row_tracks {
