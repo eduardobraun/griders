@@ -1,6 +1,3 @@
-#![warn(clippy)]
-#![warn(clippy_pedantic)]
-
 // extern crate rand;
 extern crate svg;
 
@@ -12,6 +9,13 @@ use svg::node::element::Path;
 use svg::Document;
 
 use grid::*;
+
+struct BoxItem {
+    min_width: u64,
+    max_width: u64,
+    min_height: u64,
+    max_height: u64,
+}
 
 fn main() {
     use CellSize::*;
@@ -34,7 +38,7 @@ fn main() {
     let grid = grid_layout.get_grid();
 
     for (i, &cell) in grid.iter().enumerate() {
-        println!{"Cell {:?}", cell};
+        println! {"Cell {:?}", cell};
         let (x1, y1, x2, y2) = cell;
         let data = Data::new()
             .move_to((x1, y1))

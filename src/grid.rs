@@ -20,6 +20,11 @@ struct TrackSize {
     max_growth: Option<f64>,
 }
 
+trait Layoutable {
+    fn constrained_width(&self, min: f64, max: f64) -> (f64, f64, f64);
+    fn constrained_height(&self, min: f64, max: f64) -> (f64, f64, f64);
+}
+
 // fn get_free_size(layout: &[CellSize], max_size: f32) -> f32 {
 //     let mut w = 0.;
 //     for col_w in layout {
